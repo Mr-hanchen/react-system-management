@@ -17,12 +17,12 @@ ReactDOM.render(
           <PersistGate persistor={persistor} loading={<Spin />}>
               <Router>
                   <Switch>
+                      <Route path={"/login"} component={loadable(() => import("./views/Login"))} />
+                      <Route path={"/404"} component={loadable(() => import("./views/404"))} />
                       <Route path={"/"} render={() => {
                           let isLogin = store.getState().login.isLogin;
                           return isLogin ? (<App />) : (<Redirect to={"/login"} />);
                       }} />
-                      <Route exact path={"/login"} component={loadable(() => import("./views/Login"))} />
-                      <Route path={"/404"} component={loadable(() => import("./views/404"))} />
                   </Switch>
               </Router>
           </PersistGate>

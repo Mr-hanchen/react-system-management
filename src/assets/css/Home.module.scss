@@ -1,0 +1,14 @@
+.home{
+  .item{
+    .box{
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      .daily{
+        width: 24%;
+        height: 220px;
+      }
+    }
+  }
+}

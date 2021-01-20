@@ -4,7 +4,7 @@ import { withRouter, Switch, Route, Link } from 'react-router-dom';
 import loadable from "@loadable/component";
 import logo from './logo.png';
 import './App.css';
-import {Button, Layout, Menu, Space} from 'antd';
+import {Button, Layout, Menu, Space, Anchor} from 'antd';
 import {
     MenuUnfoldOutlined,
     MenuFoldOutlined,
@@ -12,12 +12,12 @@ import {
 import {LOGOUT} from "./actions";
 import Icon from './views/Icon';
 import { logout, getMenus } from './mock';
-
-const { Header, Sider, Content } = Layout;
+import { MENU } from './actions';
 
 const mapStateToProps = (state: any) => {
     return {
-        username: state.login.username
+        username: state.login.username,
+        defaultSelectedKeys: state.menu.index
     }
 }
 
@@ -73,47 +73,52 @@ class App extends Component<any, AppState>{
     }
 
     public render(): ReactNode{
-        const { username } = this.props;
+        const { username, dispatch, defaultSelectedKeys } = this.props;
         const { menus } = this.state;
+        const selectKey = [defaultSelectedKeys];
         return (
             <Layout>
-                <Sider className={"site-layout-sider"} trigger={null} collapsible collapsed={this.state.collapsed}>
-                    <div className={"logo"}>
-                        <img src={logo} alt="logo"/>
-                    </div>
-                    <Menu mode="inline" defaultSelectedKeys={['0']}>
-                        {
-                            menus.map((menu: Menus, index: number) => {
-                                return <Menu.Item key={index} icon={<Icon type={menu.icon} />}>
-                                    <Link to={menu.link}>
-                                        { menu.name }
-                                    </Link>
-                                </Menu.Item>
-                            })
-                        }
-                    </Menu>
-                </Sider>
+                <Anchor>
+                    <Layout.Sider className={"site-layout-sider"} trigger={null} collapsible collapsed={this.state.collapsed}>
+                        <div className={"logo"}>
+                            <img src={logo} alt="logo"/>
+                        </div>
+                        <Menu mode="inline" selectedKeys={selectKey}>
+                            {
+                                menus.map((menu: Menus) => {
+                                    return <Menu.Item key={menu.link} icon={<Icon type={menu.icon} />} onClick={() => { dispatch({ type: MENU, payload: menu.link }) }}>
+                                        <Link to={menu.link}>
+                                            { menu.name }
+                                        </Link>
+                                    </Menu.Item>
+                                })
+                            }
+                        </Menu>
+                    </Layout.Sider>
+                </Anchor>
                 <Layout className="site-layout">
-                    <Header className="site-layout-background header" style={{ padding: "0 10px" }}>
+                    <Layout.Header className="site-layout-background header" style={{ padding: "0 10px" }}>
                         {React.createElement(this.state.collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
                             className: 'trigger',
                             onClick: () => { this.toggle() },
                         })}
                         <Space>
-                            <span>欢迎 { username }</span>
+                            <span>欢迎 { username } !</span>
                             <Button danger onClick={() => { this.toLogout() }}>
                                 退出
                             </Button>
                         </Space>
-                    </Header>
-                    <Content className="site-layout-background content">
+                    </Layout.Header>
+                    <Layout.Content className="site-layout-background content">
                         <Switch>
-                            <Route exact path={"/"} component={loadable(() => import("./views/Home"))} />
-                            <Route exact path={"/order"} component={loadable(() => import("./views/Order"))} />
-                            <Route exact path={"/user"} component={loadable(() => import("./views/User"))} />
-                            <Route exact path={"/system"} component={loadable(() => import("./views/System"))} />
+                            <Route path={"/order"} component={loadable(() => import("./views/Order"))} />
+                            <Route path={"/user"} component={loadable(() => import("./views/User"))} />
+                            <Route path={"/system"} component={loadable(() => import("./views/System"))} />
+                            <Route path={"/client"} component={loadable(() => import("./views/Client"))} />
+                            <Route path={"/product"} component={loadable(() => import("./views/Product"))} />
+                            <Route path={"/"} component={loadable(() => import("./views/Home"))} />
                         </Switch>
-                    </Content>
+                    </Layout.Content>
                 </Layout>
             </Layout>
         )

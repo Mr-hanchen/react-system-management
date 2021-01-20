@@ -15,7 +15,7 @@ export const login = (userInfo: UserInfo) => {
             data: qs.stringify({
                 ...userInfo
             })
-        }).then(res => {
+        }).then((res) => {
             resolve(res);
         }).catch(err => {
             reject(err);
@@ -47,4 +47,30 @@ export const getMenus = () => {
             reject(err);
         });
     });
-}
+};
+
+export const dailySummary = () => {
+    return new Promise((resolve, reject) => {
+        axios({
+            method: "GET",
+            url: "/home/dailySummary"
+        }).then(res => {
+            resolve(res);
+        }).catch(err => {
+            reject(err);
+        });
+    })
+};
+
+export const getArea = () => {
+    return new Promise((resolve, reject) => {
+        axios({
+            method: "GET",
+            url: "/order/getArea"
+        }).then(res => {
+            resolve(res);
+        }).catch(err => {
+            reject(err);
+        });
+    });
+};

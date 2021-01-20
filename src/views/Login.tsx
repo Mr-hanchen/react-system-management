@@ -30,10 +30,18 @@ class Login extends Component<any, LoginState>{
     }
     private onFinish(values: any): void{
         let _this = this;
-        login(values).then(() => {
-            message.success("登录成功!");
-            _this.props.dispatch({ type: LOGIN, payload: values });
-            _this.props.history.push("/");
+        login(values).then((res: any) => {
+            try{
+                if(res.data.code === 200){
+                    message.success("登录成功!");
+                    _this.props.dispatch({ type: LOGIN, payload: { username: res.data.username } });
+                    _this.props.history.push("/");
+                }else{
+                    message.error(res.data.message);
+                }
+            }catch(e){
+                console.info(e);
+            }
         }).catch(() => {
             message.error("登录失败!");
         })
@@ -59,7 +67,7 @@ class Login extends Component<any, LoginState>{
                     onValuesChange={(changedValues) => { this.onValuesChange(changedValues) }}
                 >
                     <Form.Item
-                        label="Username"
+                        label="账号"
                         name="username"
                         rules={[{ required: true, message: 'Please input your username!' }]}
                     >
@@ -67,7 +75,7 @@ class Login extends Component<any, LoginState>{
                     </Form.Item>
 
                     <Form.Item
-                        label="Password"
+                        label="密码"
                         name="password"
                         rules={[{ required: true, message: 'Please input your password!' }]}
                     >
